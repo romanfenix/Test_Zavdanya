@@ -1,0 +1,24 @@
+# Віртуальні середовища
+venv/
+env/
+.venv/
+
+# Секретні ключі та змінні оточення (КРИТИЧНО ВАЖЛИВО!)
+.env
+*.env
+
+# Кеш Python та скомпільовані файли
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Файли налаштувань редакторів коду (VS Code, PyCharm тощо)
+.vscode/
+.idea/
+*.swp
+
+# Системні файли (Windows / macOS)
+Thumbs.db
+.DS_Store
