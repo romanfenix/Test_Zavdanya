@@ -25,25 +25,28 @@
 ### 1. Клонування та налаштування середовища
 Склонуйте репозиторій та перейдіть у папку проєкту:
 ```bash
-git clone <посилання-на-ваш-репозиторій>
-cd <назва-папки>
-
+git clone https://github.com/romanfenix/Test_Zavdanya
+cd Test_Zavdanya
+```
 ### 2. Створіть та активуйте віртуальне середовище:
+```bash
 python -m venv venv
 
 # Для Windows:
 venv\Scripts\activate
 # Для Linux/macOS:
 source venv/bin/activate
-
+```
 ### 3. Встановіть залежності:
+```bash
 pip install -r requirements.txt
-
+```
 ### 4. Створіть файл .env у корені проєкту та додайте туди наступні ключі:
+```bash
 GITHUB_TOKEN=ваш_токен_github_models_або_openai
 GOOGLE_API_KEY=ваш_ключ_google_custom_search
 GOOGLE_CX=ваш_ідентифікатор_пошукової_системи
-
+```
 🔑 Як отримати API ключі:
 
 GITHUB_TOKEN / OpenAI API Key: Можна використовувати стандартний ключ OpenAI (sk-...) або безкоштовний GitHub Models Token (Personal Access Token).
@@ -57,8 +60,9 @@ GOOGLE_CX: Перейдіть у Programmable Search Engine, створіть п
 Формат: <назва продукту>, <кількість>
 
 Запустіть програму:
+```bash
 python main.py
-
+```
 📊 Приклади роботи
 Вхідний файл (products.txt):
 
