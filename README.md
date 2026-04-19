@@ -19,14 +19,6 @@
 - `openai` — для взаємодії з LLM.
 - `pydantic` — для суворої типізації та Structured Outputs.
 - `python-dotenv` — для безпечної роботи з API-ключами.
-## 🛠 Технологічний стек
-
-- **Python 3.10+**
-- `httpx` — для асинхронних / синхронних HTTP-запитів.
-- `beautifulsoup4` — для парсингу HTML.
-- `openai` — для взаємодії з LLM.
-- `pydantic` — для суворої типізації та Structured Outputs.
-- `python-dotenv` — для безпечної роботи з API-ключами.
 
 ## 🚀 Інструкція із запуску
 
