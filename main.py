@@ -12,7 +12,7 @@ from typing import List, Optional
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from openai import OpenAI
-
+import random # <--- Добавьте этот импорт в самое начало файла, где все импорты
 # ----------------- НАЛАШТУВАННЯ -----------------
 load_dotenv()
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -73,60 +73,30 @@ def normalize_with_ai(raw_line: str) -> Optional[ParsedProduct]:
         logger.error(f"Помилка AI нормалізації: {e}")
         return None
 
-import random # <--- Добавьте этот импорт в самое начало файла, где все импорты
-
-# Додайте цей список браузерів одразу після імпортів
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
-]
-
 def search_web_for_links(query: str) -> List[str]:
-    """Використовуємо ОФІЦІЙНЕ API Google Custom Search. Жодних блокувань!"""
-    google_api_key = os.getenv("GOOGLE_API_KEY")
-    search_engine_id = os.getenv("GOOGLE_CX")
-
-    if not google_api_key or not search_engine_id:
-        logger.error("Ключі Google API (GOOGLE_API_KEY, GOOGLE_CX) не налаштовані у .env!")
-        return []
-
-    # API endpoint для Google Custom Search
-    url = "https://www.googleapis.com/customsearch/v1"
-    
-    # Параметри запиту
+    """Залізобетонний пошук через SerpApi (обходить всі капчі)."""
+    serpapi_key = os.getenv("SERPAPI_KEY")
+    url = "https://serpapi.com/search"
     params = {
-        "key": google_api_key,
-        "cx": search_engine_id,
-        "q": query,
-        "num": 3, # Нам достатньо топ-3 посилань
-        "hl": "uk" # Мова результатів
+        "engine": "google",
+        "q": f"site:varus.ua {query}",
+        "api_key": serpapi_key,
+        "hl": "uk",
+        "num": 3
     }
 
     try:
-        # Використовуємо звичайний GET запит до API. Жодних User-Agent чи пауз не потрібно!
         with httpx.Client(timeout=15.0) as client:
             resp = client.get(url, params=params)
-            
             if resp.status_code == 200:
-                data = resp.json()
                 links = []
-                
-                # Парсимо JSON-відповідь від Google
-                for item in data.get("items", []):
-                    href = item.get("link", "")
-                    # Фільтруємо російськомовні сторінки та сторінки каталогу
+                for result in resp.json().get("organic_results", []):
+                    href = result.get("link", "")
                     if href.startswith('https://varus.ua') and '/search' not in href and '/ru/' not in href:
                         links.append(href)
-                        
                 return links
-            else:
-                logger.error(f"Помилка Google API: {resp.status_code} - {resp.text}")
-                
     except Exception as e:
-        logger.error(f"Помилка з'єднання з Google API: {e}")
-
+        logger.error(f"Помилка SerpApi: {e}")
     return []
 
 def parse_product_page(url: str) -> Optional[VarusItem]:
